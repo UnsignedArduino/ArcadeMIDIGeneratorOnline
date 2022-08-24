@@ -5,7 +5,7 @@ import {
   Image,
   onFileChange,
 } from "../scripts/ArcadeMIDI Generator";
-import { ImageListOfButtons as ImageListOfButtons } from "../components/ImageList";
+import { ImageList as ImageList } from "../components/ImageList";
 import { MidiFile } from "midifile-ts";
 
 const IndexPage = () => {
@@ -68,7 +68,7 @@ const IndexPage = () => {
 
       <p>{status}</p>
 
-      <ImageListOfButtons images={images} />
+      <ImageList images={images} />
     </main>
   );
 };

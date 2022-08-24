@@ -14,7 +14,9 @@ export const ImageListButton = ({ image }: { image: Image }) => {
         setText("Copied!");
       },
       () => {
-        setText("Failed!");
+        setText(
+          "Failed! View all the images as a TypeScript and copy the images manually."
+        );
       }
     );
   };
@@ -26,21 +28,71 @@ export const ImageListButton = ({ image }: { image: Image }) => {
   );
 };
 
-export const ImageListOfButtons = ({ images }: { images: Image[] }) => {
+export const ImageListTextArea = ({ images }: { images: Image[] }) => {
+  const array: string =
+    "[\n" +
+    images
+      .map((value: Image) => {
+        return value.image;
+      })
+      .join(",\n") +
+    "\n]";
+
+  const [copyButtonText, setCopyButtonText] = React.useState<string>(
+    "Copy all to clipboard"
+  );
+  const copy = () => {
+    copyTextToClipboard(
+      array,
+      () => {
+        setCopyButtonText("Copied!");
+      },
+      () => {
+        setCopyButtonText("Failed! Try manually copying everything above.");
+      }
+    );
+  };
+
+  return (
+    <>
+      <textarea readOnly={true} value={array}></textarea>
+      <br></br>
+      <button type="button" onClick={copy}>
+        {copyButtonText}
+      </button>
+    </>
+  );
+};
+
+export const ImageList = ({ images }: { images: Image[] }) => {
+  const [viewAsTS, setViewAsTS] = React.useState<boolean>(false);
+  const toggleViewAsTS = () => setViewAsTS(!viewAsTS);
+
   return (
     <>
       {images.length > 0 ? (
         <>
           <p>Click to copy:</p>
-          <ol>
-            {images.map((value: Image, index: number) => {
-              return (
-                <li key={value.image}>
-                  <ImageListButton image={value} />
-                </li>
-              );
-            })}
-          </ol>{" "}
+          <p>
+            (Alternatively, view all the images as a{" "}
+            <button type="button" onClick={toggleViewAsTS}>
+              {viewAsTS ? "list of buttons" : "TypeScript array"}
+            </button>{" "}
+            instead. )
+          </p>
+          {viewAsTS ? (
+            <ImageListTextArea images={images} />
+          ) : (
+            <ol>
+              {images.map((value: Image, index: number) => {
+                return (
+                  <li key={value.image}>
+                    <ImageListButton image={value} />
+                  </li>
+                );
+              })}
+            </ol>
+          )}
         </>
       ) : (
         <></>
