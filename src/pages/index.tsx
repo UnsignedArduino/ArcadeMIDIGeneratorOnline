@@ -5,11 +5,14 @@ import {
   Image,
   onFileChange,
 } from "../scripts/ArcadeMIDI Generator";
+import { ImageListOfButtons as ImageListOfButtons } from "../components/ImageList";
 import { MidiFile } from "midifile-ts";
 
 const IndexPage = () => {
-  const fileInput = React.useRef(null);
-  const [status, setStatus] = React.useState("No file selected.");
+  const fileInput: React.RefObject<HTMLInputElement> =
+    React.useRef<HTMLInputElement>(null);
+  const [status, setStatus] = React.useState<string>("No file selected.");
+  const [images, setImages] = React.useState<Image[]>([]);
 
   const onChange = (): void => {
     onFileChange(fileInput.current!, (file: MidiFile | null) => {
@@ -18,10 +21,22 @@ const IndexPage = () => {
 
         setTimeout(() => {
           // We want to run this on the next JavaScript cycle thingy so the UI updates first
-          const images: Image[] = generateImages(file);
-          console.log(images);
+          const result: Image[] = generateImages(file);
+          console.log(result);
 
-          setStatus("Done!");
+          setImages(result);
+
+          let biggestWidth = 0;
+          let biggestHeight = 0;
+
+          result.map((value: Image) => {
+            biggestWidth = Math.max(biggestWidth, value.width);
+            biggestHeight = Math.max(biggestHeight, value.height);
+          });
+
+          setStatus(
+            `Done! Make your animation block ${biggestWidth} by ${biggestHeight} pixels.`
+          );
         }, 0);
       } else {
         setStatus("Could not parse MIDI file!");
@@ -52,6 +67,8 @@ const IndexPage = () => {
       ></input>
 
       <p>{status}</p>
+
+      <ImageListOfButtons images={images} />
     </main>
   );
 };
