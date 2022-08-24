@@ -6,6 +6,12 @@ import {
   AnyChannelEvent,
 } from "midifile-ts";
 
+export interface Image {
+  image: string;
+  width: number;
+  height: number;
+}
+
 export const onFileChange = (
   input: HTMLInputElement,
   callback: (midi: MidiFile | null) => void
@@ -86,7 +92,7 @@ const convertNoteOffToNoteOn = (track: Array<AnyEvent>): void => {
   }
 };
 
-export const generateImages = (midi: MidiFile): string[] => {
+export const generateImages = (midi: MidiFile): Image[] => {
   console.log("Generating images");
 
   const msgs = mergeTracks(midi.tracks);
@@ -213,28 +219,28 @@ export const generateImages = (midi: MidiFile): string[] => {
     return `${prePad}${grid}\n`;
   };
 
-  const images: string[] = [];
-  let imageCount = 0;
+  const images: Image[] = [];
 
   for (let i = 0; i < image.length; i += 512 * 4) {
-    let thisImageCode = "img`\n";
+    let thisImageCode = "";
     let j: number = i;
     while (j < i + 512 * 4) {
       thisImageCode += formatColumnsToImage(image, "", j);
       j += 512;
     }
-    thisImageCode += "`";
-    images.push(thisImageCode);
-    imageCount++;
-  }
-
-  for (let i = 0; i < images.length; i++) {
-    while (images[i].includes("\n\n")) {
-      images[i] = images[i].replaceAll("\n\n", "\n");
+    while (thisImageCode.includes("\n\n")) {
+      thisImageCode = thisImageCode.replaceAll("\n\n", "\n");
     }
+    const width = thisImageCode.split("\n")[0].replaceAll(" ", "").length;
+    const height = thisImageCode.split("\n").length;
+    images.push({
+      image: "img`\n" + thisImageCode + "`",
+      width: width,
+      height: height,
+    });
   }
 
-  console.log(`Generated ${imageCount} image(s)`);
+  console.log(`Generated ${images.length} image(s)`);
 
   return images;
 };

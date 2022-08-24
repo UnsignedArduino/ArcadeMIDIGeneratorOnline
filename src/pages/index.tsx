@@ -1,6 +1,10 @@
 import * as React from "react";
 import type { HeadFC } from "gatsby";
-import { generateImages, onFileChange } from "../scripts/ArcadeMIDI Generator";
+import {
+  generateImages,
+  Image,
+  onFileChange,
+} from "../scripts/ArcadeMIDI Generator";
 import { MidiFile } from "midifile-ts";
 
 const IndexPage = () => {
@@ -14,7 +18,7 @@ const IndexPage = () => {
 
         setTimeout(() => {
           // We want to run this on the next JavaScript cycle thingy so the UI updates first
-          const images: string[] = generateImages(file);
+          const images: Image[] = generateImages(file);
           console.log(images);
 
           setStatus("Done!");
