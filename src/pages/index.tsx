@@ -12,10 +12,13 @@ const IndexPage = () => {
       if (file != null) {
         setStatus("Processing MIDI file...");
 
-        const images: string[] = generateImages(file);
-        console.log(images);
+        setTimeout(() => {
+          // We want to run this on the next JavaScript cycle thingy so the UI updates first
+          const images: string[] = generateImages(file);
+          console.log(images);
 
-        setStatus("Done!");
+          setStatus("Done!");
+        }, 0);
       } else {
         setStatus("Could not parse MIDI file!");
       }
