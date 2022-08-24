@@ -228,6 +228,12 @@ export const generateImages = (midi: MidiFile): string[] => {
     imageCount++;
   }
 
+  for (let i = 0; i < images.length; i++) {
+    while (images[i].includes("\n\n")) {
+      images[i] = images[i].replaceAll("\n\n", "\n");
+    }
+  }
+
   console.log(`Generated ${imageCount} image(s)`);
 
   return images;
