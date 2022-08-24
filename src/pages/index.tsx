@@ -12,7 +12,8 @@ const IndexPage = () => {
       if (file != null) {
         setStatus("Processing MIDI file...");
 
-        generateImages(file);
+        const images: string[] = generateImages(file);
+        console.log(images);
 
         setStatus("Done!");
       } else {
