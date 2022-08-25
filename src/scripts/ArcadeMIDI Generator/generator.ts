@@ -4,6 +4,8 @@ import {
   AnyEvent,
   NoteOnEvent,
   AnyChannelEvent,
+  MetaEvent,
+  SetTempoEvent,
 } from "midifile-ts";
 
 export interface Image {
@@ -92,12 +94,36 @@ const convertNoteOffToNoteOn = (track: Array<AnyEvent>): void => {
   }
 };
 
+const fixTempo = (track: Array<AnyEvent>): void => {
+  // Python mido library has a great explanation on delta time: https://mido.readthedocs.io/en/latest/midi_files.html#about-the-time-attribute
+  const defaultUsPerBeat: number = 500000;
+  let usPerBeat: number = defaultUsPerBeat;
+  // let ticksPerBeat: number = 480; // I'm not sure what this is
+
+  for (let i = 0; i < track.length; i++) {
+    if (
+      track[i].type == "meta" &&
+      (track[i] as SetTempoEvent).subtype == "setTempo"
+    ) {
+      usPerBeat = (track[i] as SetTempoEvent).microsecondsPerBeat;
+    }
+    const newMsg: AnyEvent = structuredClone(track[i]);
+    newMsg.deltaTime = Math.round(
+      newMsg.deltaTime * (usPerBeat / defaultUsPerBeat)
+    );
+    track[i] = newMsg;
+  }
+};
+
 export const generateImages = (midi: MidiFile): Image[] => {
   console.log("Generating images");
 
   const msgs = mergeTracks(midi.tracks);
   console.log(`Merged ${midi.tracks.length} tracks to ${msgs.length} messages`);
   convertNoteOffToNoteOn(msgs);
+  fixTempo(msgs);
+
+  console.log(msgs);
 
   const noteNumToName = (num: number): string => {
     const notes: string[] = [
@@ -163,7 +189,6 @@ export const generateImages = (midi: MidiFile): Image[] => {
 
   while (i < msgs.length) {
     let msg: AnyEvent = msgs[i];
-
     if (msg.type == "channel" && (msg as AnyChannelEvent).subtype == "noteOn") {
       // console.log(`Note message: ${msg}`);
 
