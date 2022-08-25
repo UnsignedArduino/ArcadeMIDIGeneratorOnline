@@ -48,7 +48,7 @@ const IndexPage = () => {
     <main>
       <h1>ArcadeMIDI Generator</h1>
       <p>
-        Upload your MIDI files to convert them to images compatible with the
+        Select a MIDI files to convert them to images compatible with the
         MakeCode Arcade extension{" "}
         <a href="https://github.com/UnsignedArduino/ArcadeMIDI">
           UnsignedArduino/ArcadeMIDI
@@ -69,6 +69,28 @@ const IndexPage = () => {
       <p>{status}</p>
 
       <ImageList images={images} />
+
+      <br></br>
+      <p>
+        Star{" "}
+        <a href="https://github.com/UnsignedArduino/ArcadeMIDIGeneratorOnline">
+          ArcadeMIDIGeneratorOnline
+        </a>{" "}
+        and{" "}
+        <a href="https://github.com/UnsignedArduino/ArcadeMIDI">ArcadeMIDI</a>{" "}
+        on GitHub!
+      </p>
+      <p>
+        Issues? Suggestions? Open an issue in their respective repositories! (
+        <a href="https://github.com/UnsignedArduino/ArcadeMIDIGeneratorOnline/issues">
+          ArcadeMIDIGeneratorOnline
+        </a>{" "}
+        or{" "}
+        <a href="https://github.com/UnsignedArduino/ArcadeMIDI/issues">
+          ArcadeMIDI
+        </a>
+        )
+      </p>
     </main>
   );
 };
